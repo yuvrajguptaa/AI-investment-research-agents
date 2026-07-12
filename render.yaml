@@ -2,7 +2,7 @@ services:
   - type: web
     name: ai-investment-research-backend
     env: node
-    buildCommand: npm install && npm run build
+    buildCommand: npm install && npm run build:ai && npm run build:backend
     startCommand: npm run start:backend
     envVars:
       - key: NODE_ENV
