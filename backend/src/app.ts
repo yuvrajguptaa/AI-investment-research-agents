@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import compression from "compression";
 import { runResearchWorkflow } from "ai";
 import { HistoryRepository } from "./models/historyRepository.js";
 import { isConnectedToMongo } from "./config/db.js";
@@ -11,11 +12,12 @@ const app = express();
 // Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: "*", // Adjust as necessary for production security
+  origin: process.env.CORS_ORIGIN || "*", // Adjust as necessary for production security
   methods: ["GET", "POST", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(express.json());
+app.use(compression());
 
 // Logger Middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -32,6 +34,14 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 app.use("/api/", limiter);
+
+/**
+ * GET /health
+ * Simple health check for Render / load balancers.
+ */
+app.get("/health", (req: Request, res: Response) => {
+  res.status(200).json({ status: "ok" });
+});
 
 /**
  * GET /api/health

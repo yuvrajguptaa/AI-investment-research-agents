@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: ai-investment-research-backend
+    env: node
+    buildCommand: npm install && npm run build:ai && npm run build:backend
+    startCommand: npm run start:backend
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
