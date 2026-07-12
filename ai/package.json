@@ -15,11 +15,11 @@
     "axios": "^1.6.7",
     "dotenv": "^16.4.5",
     "pdfkit": "^0.19.1",
-    "yahoo-finance2": "2.11.3"
+    "yahoo-finance2": "2.11.3",
+    "@types/node": "^20.19.43",
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@types/node": "^20.11.24",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "ts-node": "^10.9.2"
   }
 }
