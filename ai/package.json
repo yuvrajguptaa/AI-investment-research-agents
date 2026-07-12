@@ -1,0 +1,25 @@
+{
+  "name": "ai",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts"
+  },
+  "dependencies": {
+    "@langchain/core": "^0.3.15",
+    "@langchain/google-genai": "^0.1.1",
+    "@langchain/langgraph": "^0.2.22",
+    "@types/pdfkit": "^0.17.6",
+    "axios": "^1.6.7",
+    "dotenv": "^16.4.5",
+    "pdfkit": "^0.19.1",
+    "yahoo-finance2": "2.11.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
