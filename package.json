@@ -12,7 +12,7 @@
     "build:ai": "npm run build --workspace=ai",
     "build:backend": "npm run build --workspace=backend",
     "build:frontend": "npm run build --workspace=frontend",
-    "build": "npm run build --workspaces --if-present",
+    "build": "npm run build:ai && npm run build:backend && npm run build:frontend",
     "dev:backend": "npm run dev --workspace=backend",
     "dev:frontend": "npm run dev --workspace=frontend",
     "start:backend": "npm run start --workspace=backend",
