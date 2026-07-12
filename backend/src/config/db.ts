@@ -9,10 +9,13 @@ export async function connectDB() {
   try {
     console.log(`[Database] Attempting connection to MongoDB at: ${uri}`);
     
-    // Set a short server selection timeout so we fail quickly if mongo is offline
-    await mongoose.connect(uri, {
-      serverSelectionTimeoutMS: 3000
-    });
+    const options = {
+      serverSelectionTimeoutMS: process.env.NODE_ENV === "production" ? 15000 : 3000,
+      maxPoolSize: 10,
+      socketTimeoutMS: 45000,
+    };
+    
+    await mongoose.connect(uri, options);
     
     isConnectedToMongo = true;
     console.log("[Database] MongoDB connection established successfully.");
