@@ -65,7 +65,7 @@ export const Dashboard: React.FC = () => {
   // Load history & favorites
   const loadData = async () => {
     try {
-      const res = await fetch("/api/history");
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ""}/api/history`);
       if (res.ok) {
         const data = await res.ok ? await res.json() : [];
         setHistory(data);
@@ -147,7 +147,7 @@ export const Dashboard: React.FC = () => {
     }, 1800);
 
     try {
-      const response = await fetch("/api/research", {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || ""}/api/research`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ company: query })
@@ -199,7 +199,7 @@ export const Dashboard: React.FC = () => {
   const toggleFavorite = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     try {
-      const res = await fetch(`/api/history/${id}/favorite`, { method: "POST" });
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ""}/api/history/${id}/favorite`, { method: "POST" });
       if (res.ok) {
         loadData();
       }
@@ -213,7 +213,7 @@ export const Dashboard: React.FC = () => {
     e.stopPropagation();
     if (!confirm("Are you sure you want to delete this research log?")) return;
     try {
-      const res = await fetch(`/api/history/${id}`, { method: "DELETE" });
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ""}/api/history/${id}`, { method: "DELETE" });
       if (res.ok) {
         loadData();
       }

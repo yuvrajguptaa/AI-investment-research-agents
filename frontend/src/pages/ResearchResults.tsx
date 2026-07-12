@@ -43,7 +43,7 @@ export const ResearchResults: React.FC = () => {
   useEffect(() => {
     const fetchReport = async () => {
       try {
-        const res = await fetch(`/api/research/${id}`);
+        const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ""}/api/research/${id}`);
         if (res.ok) {
           const report = await res.json();
           setData(report);

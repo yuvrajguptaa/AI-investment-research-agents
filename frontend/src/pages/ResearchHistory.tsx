@@ -31,7 +31,7 @@ export const ResearchHistoryPage: React.FC = () => {
 
   const fetchHistory = async () => {
     try {
-      const res = await fetch("/api/history");
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ""}/api/history`);
       if (res.ok) {
         const data = await res.json();
         setHistory(data);
@@ -63,7 +63,7 @@ export const ResearchHistoryPage: React.FC = () => {
   const toggleFavorite = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     try {
-      const res = await fetch(`/api/history/${id}/favorite`, { method: "POST" });
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ""}/api/history/${id}/favorite`, { method: "POST" });
       if (res.ok) {
         fetchHistory();
       }
@@ -76,7 +76,7 @@ export const ResearchHistoryPage: React.FC = () => {
     e.stopPropagation();
     if (!confirm("Are you sure you want to delete this research record?")) return;
     try {
-      const res = await fetch(`/api/history/${id}`, { method: "DELETE" });
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || ""}/api/history/${id}`, { method: "DELETE" });
       if (res.ok) {
         fetchHistory();
       }
