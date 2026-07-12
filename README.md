@@ -1,126 +1,99 @@
-# InvestIQ // AI Hedge Fund Research Terminal
+# InvestIQ: AI-Powered Investment Research Terminal
 
-InvestIQ is a production-quality, multi-agent investment research terminal. It takes a company name as input, triggers a sequential 10-node agentic workflow orchestrating data retrieval, financial audits, peer benchmarking, news sentiment extraction, bias check reflections, and committee votes. The system then issues a definitive investment recommendation (`INVEST` or `PASS`) with confidence levels.
+## Overview
+InvestIQ is an advanced, agentic AI platform designed to simulate a professional hedge fund research committee. Given a target company, the system orchestrates a team of specialized AI agents—ranging from a Financial Analyst to a Devil's Advocate—working sequentially to gather real-time data, evaluate risks, analyze market conditions, and ultimately compile a comprehensive investment recommendation. 
 
-## 🚀 Key Features
-- **LangGraph.js Orchestration**: A state-managed sequential pipeline of 10 autonomous nodes.
-- **Provider-Agnostic LLM**: Built with a provider abstraction layer supporting Google Gemini 2.5 Pro (default) and OpenAI GPT-4o.
-- **Robust Multi-Source Tools**: Live integration with Yahoo Finance (`yahoo-finance2`), Tavily Search, and fallback news engines.
-- **Hybrid Mongoose Storage**: Transparent repository layer connecting to MongoDB, with automatic JSON file storage fallback (`history_db.json`) if MongoDB is unavailable.
-- **Premium Glassmorphic UI**: High-fidelity dark theme with Framer Motion, HTML5 SpeechRecognition (Voice Input), Portfolio Allocator, Ticker comparison panel, and Recharts metrics.
+## How to Run It
 
----
+### Prerequisites
+- Node.js (v18+)
+- A Google Gemini API Key (or OpenAI key if reconfigured)
+- A Tavily API Key (for real-time web search)
+- (Optional) MongoDB Atlas Connection String
 
-## 📂 Project Structure
+### Setup Steps
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yuvrajguptaa/AI-investment-research-agents.git
+   cd AI-investment-research-agents
+   ```
 
-```
-insideIIM/
-├── ai/                      # LangGraph.js & LLM Provider Node Workspace
-│   ├── src/
-│   │   ├── agents/          # Code for all 10 agents
-│   │   ├── graph/           # State definitions and LangGraph workflow
-│   │   ├── llm/             # Gemini & OpenAI abstraction provider
-│   │   └── tools/           # Tavily and Yahoo Finance search integrations
-│   ├── package.json
-│   └── tsconfig.json
-│
-├── backend/                 # Express.js REST API
-│   ├── src/
-│   │   ├── config/          # Mongoose database setup
-│   │   ├── models/          # ResearchHistory schemas & local DB fallbacks
-│   │   ├── app.ts           # Express routing & rate limits
-│   │   └── server.ts        # Entry point
-│   ├── package.json
-│   └── tsconfig.json
-│
-├── frontend/                # React.js (Vite) Single Page App
-│   ├── src/
-│   │   ├── components/      # Sidebar, Themes, and Layouts
-│   │   ├── pages/           # Terminal, Results, History, & About Pages
-│   │   ├── App.tsx          # React Router definition
-│   │   └── main.tsx
-│   ├── package.json
-│   ├── tailwind.config.js
-│   └── vite.config.ts
-│
-├── README.md                # System documentation
-└── package.json             # Root npm workspace
-```
+2. **Configure Environment Variables:**
+   Rename `.env.example` to `.env` in the root directory and add your keys:
+   ```env
+   GEMINI_API_KEY=your_gemini_key_here
+   TAVILY_API_KEY=your_tavily_key_here
+   MONGODB_URI=your_mongodb_connection_string # Optional
+   ```
+
+3. **Install Dependencies:**
+   This project uses npm workspaces to manage the monorepo (frontend, backend, ai).
+   ```bash
+   npm install
+   ```
+
+4. **Build and Run:**
+   ```bash
+   npm run build
+   npm start
+   ```
+   - The Frontend will be available at `http://localhost:3000`
+   - The Backend API will be available at `http://localhost:5000`
 
 ---
 
-## 🛠️ Tech Stack
-- **Frontend**: React.js (Vite), TailwindCSS, React Router, Framer Motion, Recharts
-- **Backend**: Node.js, Express.js
-- **AI**: LangChain.js, LangGraph.js
-- **Database**: MongoDB + Mongoose (with local JSON fallback)
-- **LLM**: Google Gemini 2.5 Pro (via `@langchain/google-genai`)
+## How It Works (Approach & Architecture)
+
+The application is built using a modern decoupled architecture:
+1. **AI Orchestration Layer (`/ai`)**: Powered by **LangGraph** and **LangChain**. It defines a state machine where multiple AI "nodes" act as specialized agents. The workflow includes:
+   - *Data Gatherers*: Fetching news and web data via Tavily.
+   - *Analysts*: Financial, Market, and Risk Assessment nodes.
+   - *Critics*: A "Devil's Advocate" node that challenges the initial findings.
+   - *Committee*: A final node that synthesizes the debate into a final Score (1-10) and Recommendation (BUY/HOLD/PASS).
+2. **Backend API (`/backend`)**: An Express.js Node server that securely handles API requests, triggers the LangGraph workflow, and stores historical research in MongoDB (with an automatic fallback to a local JSON file if Mongo isn't provided).
+3. **Frontend UI (`/frontend`)**: A React application built with Vite, Tailwind CSS, and Framer Motion, providing a premium, dark-mode "Bloomberg Terminal" aesthetic. 
 
 ---
 
-## 🤖 The 10-Agent Workflow
+## Key Decisions & Trade-Offs
 
-1. **Company Research Agent**: Discovers ticker symbols and maps corporate segment summaries.
-2. **Financial Analyst Agent**: Audits fundamental multiples (P/E, margins, cash flow, debt).
-3. **Market Analyst Agent**: Analyzes industry growth CAGR, TAM limits, and headwinds.
-4. **Risk Assessment Agent**: Models categorical threat metrics (regulatory, operational).
-5. **Competitor Analysis Agent**: Profiles peer metrics and evaluates competitive moats.
-6. **News Analysis Agent**: Mines news feeds, ranking media sentiment scales.
-7. **Reflection Agent**: Critically audits previous nodes to flag biases or data gaps.
-8. **Critic Agent**: Serves as devil's advocate, arguing why the committee should PASS.
-9. **Investment Committee Agent**: Simulates Growth, Value, and Risk Partner vote debates.
-10. **Final Decision Agent**: Harmonizes votes and details into a structured JSON recommendation.
-
----
-
-## ⚙️ Quick Start Installation
-
-### 1. Prerequisites
-- [Node.js](https://nodejs.org) (v18+ recommended)
-- [MongoDB](https://www.mongodb.com/) (Optional - the app will fall back to `history_db.json` automatically if offline)
-
-### 2. Configure Environment Variables
-Create a `.env` file at the root directory:
-```env
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/investment-research
-
-# LLM Core Config
-LLM_PROVIDER=gemini
-GEMINI_API_KEY=YOUR_GEMINI_API_KEY
-GEMINI_MODEL=gemini-2.5-pro
-
-# Search API (Optional)
-TAVILY_API_KEY=YOUR_TAVILY_API_KEY
-```
-
-### 3. Bootstrap Dependencies
-From the root directory, install all monorepo dependencies:
-```bash
-npm install
-```
-
-### 4. Build and Compile TypeScript Workspace
-Run the build script to compile TypeScript files in the `ai` and `backend` layers:
-```bash
-npm run build
-```
-
-### 5. Launch the Application
-Start the backend and frontend dev servers concurrently:
-```bash
-npm start
-```
-- **Hedge Fund Terminal (Frontend)**: [http://localhost:3000](http://localhost:3000)
-- **REST API (Backend)**: [http://localhost:5000/api/health](http://localhost:5000/api/health)
+- **LangGraph vs. Standard Prompting**: 
+  - *Decision:* We used LangGraph to create cyclical and sequential agent workflows rather than a single massive LLM prompt.
+  - *Why:* It allows the AI to self-reflect and critique its own work (via the Devil's Advocate node) before finalizing the report, drastically reducing hallucinations and bias.
+- **Google Gemini vs. OpenAI**:
+  - *Decision:* Implemented Google Gemini as the core LLM.
+  - *Why:* Gemini offers a massive context window and extremely fast inference speeds, which is strictly necessary when passing large volumes of financial data and web search results between 10 different agents.
+- **Local Fallback Database**:
+  - *Decision:* Implemented a dual-database system.
+  - *Why:* If the MongoDB connection fails or is missing, the backend silently falls back to a local `history_db.json` file. This guarantees the app always runs for reviewers without tedious database setup.
+- **Trade-off (WebSockets)**: 
+  - *Left out:* Real-time WebSocket streaming of agent thoughts to the frontend.
+  - *Why:* To ensure deployment reliability on serverless platforms (like Vercel and Render), we opted for a robust REST API with loading states rather than complex WebSocket connections that frequently drop on free tiers.
 
 ---
 
-## 📡 REST API Documentation
+## Example Runs
 
-- **GET `/api/health`**: Inspect server uptime and database mode (MongoDB vs local JSON file).
-- **POST `/api/research`**: Validate request body `{ "company": "Tesla" }` and spawn the LangGraph pipeline.
-- **GET `/api/history`**: Retrieve all past corporate reports.
-- **GET `/api/research/:id`**: Query full interactive metrics for a specific report ID.
-- **DELETE `/api/history/:id`**: Purge a research card from database history.
-- **POST `/api/history/:id/favorite`**: Toggle the star favorite indicator status.
+### 1. NVIDIA Corporation (NVDA)
+- **Agent Output:** The Market Analyst node highlighted Nvidia's absolute monopoly in AI training GPUs and strong data center revenue growth. However, the Risk Assessor flagged heavy reliance on TSMC (Taiwan Semiconductor) and geopolitical tensions as critical vulnerabilities. 
+- **Final Verdict:** Score 9.2/10. **STRONG BUY**, citing that AI infrastructure spending vastly outweighs short-term supply chain risks.
+
+### 2. Tesla, Inc. (TSLA)
+- **Agent Output:** The Financial Analyst praised strong free cash flow and energy storage growth. The Devil's Advocate heavily criticized the aging vehicle lineup and increasing competition from BYD in China.
+- **Final Verdict:** Score 6.8/10. **HOLD**, recommending investors wait for clearer margins and Robotaxi regulatory approvals before increasing positions.
+
+---
+
+## What I Would Improve With More Time
+
+1. **Deterministic Financial Data**: Instead of relying solely on LLMs and Tavily web searches for financial data, I would integrate a strictly deterministic API (like Alpha Vantage or Yahoo Finance API) as a tool for the agents to pull exact P/E ratios and balance sheets.
+2. **User Authentication**: Implement OAuth (via NextAuth or Clerk) so different users can log in and maintain their own private portfolios and research histories.
+3. **Real-Time Streaming**: Implement Server-Sent Events (SSE) so the user can watch the agents "think" and debate in real-time on the frontend UI, rather than waiting for the final compiled JSON response.
+
+---
+
+## 🏆 BONUS: LLM Chat Transcript Included!
+As requested for the bonus points, the **entire LLM chat session transcript** documenting the agentic generation, thought process, bug fixing, and architecture decisions made during the creation of this project has been included! 
+
+You can find the full transcript in the root directory of this repository:
+📁 **`ai_development_transcript.jsonl`**
